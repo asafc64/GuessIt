@@ -169,10 +169,15 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            background: #ffffffa8;
+            padding: 10px;
+            border-radius: 10px;
         }
 
         #picked-card {
             border-radius: 5px;
+            box-shadow: 0px 1px 6px #00000021;
+            border-top: 1px solid white;
         }
 
         button {
@@ -180,6 +185,10 @@
             padding: 10px;
             font-size: 16px;
             border-radius: 5px;
+        }
+        button:hover {
+            cursor: pointer;
+            background: #e0e0e0;
         }
     </style>
 </head>
@@ -197,7 +206,7 @@
         </div>
         <div class="sidepanel">
             <img id="picked-card" src="images/10_Vince.jpg" />
-            <button onclick="pickCard()">Refresh Card</button>
+            <button onclick="pickCard()">Draw Character</button>
         </div>
 
     </div>
