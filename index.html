@@ -206,7 +206,7 @@
         </div>
         <div class="sidepanel">
             <img id="picked-card" src="images/10_Vince.jpg" />
-            <button onclick="pickCard()">Draw Character</button>
+            <button onclick="newGame()">New Game</button>
         </div>
 
     </div>
@@ -302,15 +302,18 @@
             }
         }
 
-        function pickCard() {
+        function newGame() {
             const randomIndex = Math.floor(Math.random() * faces.length);
             const pickedFace = faces[randomIndex];
             const pickedCardEl = document.getElementById("picked-card");
             pickedCardEl.src = pickedFace.img;
+            document.querySelectorAll(".card").forEach(cardEl => {
+                cardEl.classList.remove("eliminated");
+            });
         }
 
         buildBoard();
-        pickCard();
+        newGame();
     </script>
 </body>
 
