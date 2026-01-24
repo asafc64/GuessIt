@@ -28,6 +28,20 @@
             overflow: hidden;
         }
 
+        .top {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 25px;
+            background: #1b130e;
+            display: flex;
+            justify-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 5px;
+            z-index: 1000;
+        }
+
         .scene {
             perspective: 2000px;
             perspective-origin: 50% 50%;
@@ -168,6 +182,12 @@
 </head>
 
 <body>
+    <div class="top">
+        <span>Guess It</span>
+        <a href="https://github.com/asafc64/GuessIt" target="_blank">
+            <img src="images/GitHub_Invertocat_White.png" height="100%" />
+        </a>
+    </div>
     <div class="scene">
         <div id="boardWrapper" class="board-wrapper">
             <div id="board" class="board"></div>
