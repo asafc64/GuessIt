@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Guess Who - 3D Board Prototype</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        :root {
+            --cols: 6;
+            --rows: 4;
+            --gap: 40px 10px;
+            --board-tilt-x: 35deg;
+            --board-tilt-z: 0;
+            --flip-angle: -152deg;
+            --upright-lean: -46deg;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgb(167, 179, 170);
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            color: #eaeaf0;
+            overflow: hidden;
+        }
+
+        .scene {
+            perspective: 2000px;
+            perspective-origin: 50% 50%;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .board-wrapper {
+            /* width: 100%; */
+            height: 100%;
+            transform-style: preserve-3d;
+            transform: translateY(-20px) rotateX(var(--board-tilt-x)) rotateZ(var(--board-tilt-z));
+        }
+
+        .board {
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: repeat(var(--cols), 1fr);
+            grid-template-rows: repeat(var(--rows), 1fr);
+            justify-items: center;
+            gap: var(--gap);
+            padding: 28px;
+            background: rgb(87, 80, 76);
+            border-radius: 5px;
+            transform-style: preserve-3d;
+        }
+
+        .card {
+            width: fit-content;
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
+            background: #1e1f26;
+            border-top: 2px solid #ffffff;
+            transform-style: preserve-3d;
+            transform-origin: bottom center;
+            /* slightly leaned back like physical Guess Who cards */
+            transform: rotateX(var(--upright-lean));
+            /* box-shadow:
+                0 10px 18px rgba(0, 0, 0, 0.5),
+                inset 0 1px 2px rgba(255, 255, 255, 0.12); */
+            cursor: pointer;
+            transition:
+                transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1),
+                box-shadow 220ms ease,
+                filter 220ms ease;
+        }
+
+        .card:hover:not(.eliminated) {
+            /* lift + reduce lean slightly for tactile feel */
+            transform: rotateX(calc(var(--upright-lean))) translateY(-32px);
+            box-shadow: 0px 7px 9px rgb(0 0 0 / 18%);
+        }
+
+
+        .card.eliminated {
+            filter: grayscale(1) brightness(0.3);
+            opacity: 0.8;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            backface-visibility: hidden;
+        }
+
+        .card .label {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 6px 8px;
+            font-size: 14px;
+            color: #0000008f;
+            text-align: center;
+            letter-spacing: 0.2px;
+        }
+
+        .card .overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+            transition: opacity 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+
+        .card:hover .overlay {
+            opacity: 0.5;
+        }
+
+        /* subtle board depth */
+        .board::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            transform: translateZ(-18px);
+            background: linear-gradient(135deg, #241a14, #1b130e);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        /* small UI hint */
+        .hint {
+            position: fixed;
+            bottom: 14px;
+            opacity: 0.7;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scene">
+        <div id="boardWrapper" class="board-wrapper">
+            <div id="board" class="board"></div>
+        </div>
+    </div>
+
+    <div class="hint">Click a card to flip it down (eliminate). Click again to restore.</div>
+
+    <script>
+        // --- Configuration ---
+        const COLS = 6;
+        const ROWS = 4;
+
+        const imageUrls = [
+            "images/10_Vince.jpg",
+            "images/11_Violet.jpg",
+            "images/12_Isaac.jpg",
+            "images/13_Tiffany.jpg",
+            "images/14_Joey.jpg",
+            "images/15_Sabrina.jpg",
+            "images/16_Bernard.jpg",
+            "images/17_Charlene.jpg",
+            "images/18_Hugo.jpg",
+            "images/19_Kelli.jpg",
+            "images/1_Corey.jpg",
+            "images/20_Clayton.jpg",
+            "images/21_Celia.jpg",
+            "images/22_Marcus.jpg",
+            "images/23_Mayra.jpg",
+            "images/24_Perry.jpg",
+            "images/2_Rosario.jpg",
+            "images/3_Susanne.jpg",
+            "images/4_Ralph.jpg",
+            "images/5_Doris.jpg",
+            "images/6_Elmer.jpg",
+            "images/7_Yolanda.jpg",
+            "images/8_Richard.jpg",
+            "images/9_Michele.jpg",
+        ];
+
+        // Temporary placeholder faces (replace with real character images later)
+        const faces = imageUrls.map((img, i) => ({
+            id: i,
+            name: img.match(/images\/\d+_(.+)\.jpg/)[1],
+            img: img,
+            eliminated: false
+        }));
+
+        const boardEl = document.getElementById("board");
+        const boardWrapperEl = document.getElementById("boardWrapper");
+
+        function buildBoard() {
+            boardEl.style.setProperty("--cols", COLS);
+            boardEl.style.setProperty("--rows", ROWS);
+
+            faces.forEach(face => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.dataset.id = face.id;
+
+                const img = document.createElement("img");
+                img.src = face.img;
+                img.alt = face.name;
+
+                const label = document.createElement("div");
+                label.className = "label";
+                label.textContent = face.name;
+
+                const overlay = document.createElement("div");
+                overlay.className = "overlay";
+
+                card.appendChild(img);
+                card.appendChild(overlay);
+                card.appendChild(label);
+
+                card.addEventListener("click", () => toggleEliminated(face.id));
+
+                boardEl.appendChild(card);
+            });
+        }
+
+        function toggleEliminated(id) {
+            const face = faces.find(f => f.id === id);
+            if (!face) return;
+
+            face.eliminated = !face.eliminated;
+
+            const cardEl = boardEl.querySelector(`.card[data-id="${id}"]`);
+            if (!cardEl) return;
+
+            if (face.eliminated) {
+                cardEl.classList.add("eliminated");
+            } else {
+                cardEl.classList.remove("eliminated");
+            }
+        }
+
+        buildBoard();
+    </script>
+</body>
+
+</html>
