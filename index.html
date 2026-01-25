@@ -174,10 +174,29 @@
             border-radius: 10px;
         }
 
-        #picked-card {
+        .picked-card {
+            position: relative;
             border-radius: 5px;
             box-shadow: 0px 1px 6px #00000021;
             border-top: 1px solid white;
+        }
+
+        #picked-card-img {
+            width: 100%;
+        }
+
+        #picked-card-label {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 8px 6px;
+            font-size: 18px;
+            color: #000000a8;
+            text-align: center;
+            letter-spacing: 0.2px;
+            background: #ffffff38;
+            font-weight: 200;
         }
 
         button {
@@ -186,6 +205,7 @@
             font-size: 16px;
             border-radius: 5px;
         }
+
         button:hover {
             cursor: pointer;
             background: #e0e0e0;
@@ -205,7 +225,10 @@
             <div id="board" class="board"></div>
         </div>
         <div class="sidepanel">
-            <img id="picked-card" src="images/10_Vince.jpg" />
+            <div class="picked-card">
+                <img id="picked-card-img" src="images/10_Vince.jpg" />
+                <div id="picked-card-label">sdfdf</div>
+            </div>
             <button onclick="newGame()">New Game</button>
         </div>
 
@@ -305,8 +328,10 @@
         function newGame() {
             const randomIndex = Math.floor(Math.random() * faces.length);
             const pickedFace = faces[randomIndex];
-            const pickedCardEl = document.getElementById("picked-card");
+            const pickedCardEl = document.getElementById("picked-card-img");
             pickedCardEl.src = pickedFace.img;
+            const pickedCardLabelEl = document.getElementById("picked-card-label");
+            pickedCardLabelEl.textContent = pickedFace.name;
             document.querySelectorAll(".card").forEach(cardEl => {
                 cardEl.classList.remove("eliminated");
             });
