@@ -6,6 +6,9 @@
     <title>Guess It</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+    <script src="lang.js"></script>
 </head>
 
 <body>
@@ -14,6 +17,10 @@
         <a href="https://github.com/asafc64/GuessIt" target="_blank">
             <img src="images/GitHub_Invertocat_White.png" height="100%" />
         </a>
+        <div class="lang-toggle">
+            <button class="lang-btn active" data-lang-key="en">EN</button>
+            <button class="lang-btn" data-lang-key="he">HE</button>
+        </div>
     </div>
     <div class="scene">
         <div id="boardWrapper" class="board-wrapper">
@@ -24,15 +31,11 @@
                 <img id="picked-card-img" src="images/10_Vince.jpg" />
                 <div id="picked-card-label">sdfdf</div>
             </div>
-            <button onclick="newGame()">New Game</button>
+            <button id="new-game-btn" onclick="newGame()">
+                <span data-lang data-lang-he="משחק חדש">New Game</span>
+            </button>
         </div>
-
     </div>
-
-    <div class="hint">Click a card to flip it down (eliminate). Click again to restore.</div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
-    <script src="script.js"></script>
 </body>
 
 </html>
