@@ -3,6 +3,15 @@ $(function () {
     const ROWS = 4;
 
     const imageUrls = [
+        "generator/output/1_Alice.png",
+        "generator/output/2_Bob.png",
+        "generator/output/3_Charlie.png",
+        "generator/output/4_Diana.png",
+        "generator/output/5_Ethan.png",
+        "generator/output/6_Fiona.png",
+        "generator/output/7_George.png",
+        "generator/output/8_Hannah.png",
+        "generator/output/9_Ian.png",
         "generator/output/10_Jasmine.png",
         "generator/output/11_Kevin.png",
         "generator/output/12_Lily.png",
@@ -13,20 +22,11 @@ $(function () {
         "generator/output/17_Quentin.png",
         "generator/output/18_Rachel.png",
         "generator/output/19_Sam.png",
-        "generator/output/1_Alice.png",
         "generator/output/20_Tina.png",
         "generator/output/21_Ulysses.png",
         "generator/output/22_Victoria.png",
         "generator/output/23_William.png",
         "generator/output/24_Zoe.png",
-        "generator/output/2_Bob.png",
-        "generator/output/3_Charlie.png",
-        "generator/output/4_Diana.png",
-        "generator/output/5_Ethan.png",
-        "generator/output/6_Fiona.png",
-        "generator/output/7_George.png",
-        "generator/output/8_Hannah.png",
-        "generator/output/9_Ian.png",
     ];
 
     const hebrewNames = ["אורית", "רועי", "רונית", "רפאל", "דורית", "אלעד", "יעל", "רון", "מיכל", "נדב", "סיגל", "יצחק", "תמר", "יואב", "שירה", "ברק", "שרון", "עומר", "קרן", "גלעד", "סיגל", "מורן", "מאיה", "פאר"];
